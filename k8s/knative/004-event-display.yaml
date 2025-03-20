@@ -1,0 +1,29 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: event-monitor
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: event-monitor
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  template:
+    spec:
+      containers:
+      - image: gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: monitor-all-events
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: monitor-all-events
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: event-monitor

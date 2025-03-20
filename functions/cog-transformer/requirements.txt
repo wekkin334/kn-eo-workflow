@@ -1,0 +1,7 @@
+parliament-functions==0.1.0
+cloudevents==1.11.0
+functions-framework==3.*
+minio==7.2.15
+rasterio>=1.4.3
+rio-cogeo>=5.4.1
+numpy>=2.2.4

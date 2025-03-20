@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: minio-data
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard

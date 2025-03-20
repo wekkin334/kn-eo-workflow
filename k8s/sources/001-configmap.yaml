@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingestion-config
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: ingestion-config
+    app.kubernetes.io/part-of: eo-processing-system
+data:
+  MINIO_ENDPOINT: "minio.eo-workflow.svc.cluster.local:9000"
+  RAW_BUCKET: "raw-assets"
+  REQUEST_QUEUE: "requests"
+  STAC_COLLECTION: "sentinel-2-l2a"
+  MAX_CLOUD_COVER: "20"
+  MAX_ITEMS: "3"
+  MAX_RETRIES: "3"
+  CONNECTION_TIMEOUT: "5"
+  MAX_WORKERS: "4"
+  MINIO_SECURE: "false"
+  EVENT_SOURCE: "eo-workflow/ingestion"
+  WATCH_INTERVAL: "60"

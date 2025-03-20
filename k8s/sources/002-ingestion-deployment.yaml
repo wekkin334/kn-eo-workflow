@@ -1,0 +1,30 @@
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: ingestion
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: ingestion
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  template:
+    spec:
+      containers:
+      - image: docker.io/davidandw190/eo-stac-ingestion:latest
+        name: ingestion
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        envFrom:
+        - configMapRef:
+            name: ingestion-config
+        env:
+  sink:
+    ref:
+      apiVersion: eventing.knative.dev/v1
+      kind: Broker
+      name: eo-event-broker

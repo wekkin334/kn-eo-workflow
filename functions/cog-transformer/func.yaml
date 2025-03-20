@@ -1,0 +1,26 @@
+specVersion: 0.36.0
+name: cog-transformer
+runtime: python
+created: 2025-03-17T12:04:42.970534761+02:00
+registry: docker.io/davidandw190
+image: docker.io/davidandw190/cog-transformer:latest
+build:
+  builder: pack
+  buildEnvs:
+  - name: PYTHONUNBUFFERED
+    value: "1"
+deploy:
+  namespace: eo-workflow
+  annotations:
+    serving.knative.dev/preserveCloudEvents: "true"
+  #   serving.knative.dev/serviceAccountName: minio-vault-auth
+  #   vault.hashicorp.com/agent-init-first: "true"
+  #   vault.hashicorp.com/agent-inject: "true"
+  #   vault.hashicorp.com/agent-inject-secret-minio-config: minio/data/data/config
+  #   vault.hashicorp.com/agent-inject-status: update
+  #   vault.hashicorp.com/agent-inject-template-minio-config: |
+  #     {{- with secret "minio/data/data/config" -}}
+  #     export MINIO_ROOT_USER="{{ .Data.data.MINIO_ROOT_USER }}"
+  #     export MINIO_ROOT_PASSWORD="{{ .Data.data.MINIO_ROOT_PASSWORD }}"
+  #     {{- end -}}
+  # serviceAccountName: minio-vault-auth

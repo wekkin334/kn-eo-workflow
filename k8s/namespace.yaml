@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: eo-workflow
+  labels:
+    app.kubernetes.io/name: eo-workflow
+    app.kubernetes.io/part-of: eo-processing-system

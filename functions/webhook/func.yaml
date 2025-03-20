@@ -1,0 +1,15 @@
+specVersion: 0.36.0
+name: webhook
+runtime: python
+registry: docker.io/davidandw190
+image: docker.io/davidandw190/eo-webhook:latest
+created: 2025-03-17T00:56:15.655238904+02:00
+build:
+  builder: pack
+  buildEnvs:
+  - name: PYTHONUNBUFFERED
+    value: "1"
+deploy:
+  namespace: eo-workflow
+  annotations:
+    serving.knative.dev/preserveCloudEvents: "true"

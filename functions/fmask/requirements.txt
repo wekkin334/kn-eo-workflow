@@ -1,0 +1,10 @@
+parliament-functions==0.1.0
+cloudevents==1.11.0
+functions-framework==3.*
+minio==7.2.15
+xarray>=2025.1.2
+rioxarray>=0.18.2
+numpy>=2.2.4
+scipy>=1.15.2
+scikit-image>=0.25.2
+matplotlib>=3.10.1

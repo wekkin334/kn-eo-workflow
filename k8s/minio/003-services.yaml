@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/component: object-storage
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9000
+    targetPort: 9000
+    protocol: TCP
+    name: api
+  - port: 9001
+    targetPort: 9001
+    protocol: TCP
+    name: console
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-headless
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: minio-headless
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/component: object-storage
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 9000
+    name: api
+  - port: 9001
+    name: console
+  selector:
+    app: minio

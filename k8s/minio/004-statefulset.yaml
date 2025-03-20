@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/component: object-storage
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  serviceName: minio
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+        app.kubernetes.io/name: minio
+        app.kubernetes.io/instance: minio
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "minio-role"
+        vault.hashicorp.com/agent-inject-secret-minio-config: "minio/data/data/config"
+        vault.hashicorp.com/agent-inject-template-minio-config: |
+          {{- with secret "minio/data/data/config" -}}
+          export MINIO_ROOT_USER="{{ .Data.data.MINIO_ROOT_USER }}"
+          export MINIO_ROOT_PASSWORD="{{ .Data.data.MINIO_ROOT_PASSWORD }}"
+          {{- end -}}
+        vault.hashicorp.com/address: "http://vault.eo-workflow.svc:8200"
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      serviceAccountName: minio-vault-auth
+      containers:
+      - name: minio
+        image: quay.io/minio/minio:RELEASE.2024-05-10T01-41-38Z.hotfix.5c0012bcd
+        imagePullPolicy: IfNotPresent
+        command:
+        - "/bin/sh"
+        - "-c"
+        args:
+        - |
+          # Start MinIO server directly (no waiting for Vault for now)
+          minio server /data --console-address ":9001" &
+
+          # Wait for MinIO to be ready
+          until curl -s http://localhost:9000/minio/health/live; do
+            echo "Waiting for MinIO to be ready..."
+            sleep 2
+          done
+
+          # Run the bucket creation script
+          echo "${create-buckets.sh}" > /tmp/create-buckets.sh
+          chmod +x /tmp/create-buckets.sh
+          /tmp/create-buckets.sh
+
+          # Keep the container running
+          wait
+        env:
+        - name: MINIO_ROOT_USER
+          value: "minioadmin" # for testing
+        - name: MINIO_ROOT_PASSWORD
+          value: "minioadmin" # for testing
+        - name: MINIO_UPDATE
+          value: "off"
+        envFrom:
+        - configMapRef:
+            name: minio-config
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 9001
+          name: console
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "4Gi"
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: 9000
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 60
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+      - name: config-volume
+        configMap:
+          name: minio-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app.kubernetes.io/name: minio-data
+        app.kubernetes.io/instance: minio
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

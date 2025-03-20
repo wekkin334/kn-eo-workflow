@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minio-config
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: minio-config
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/component: config
+    app.kubernetes.io/part-of: eo-processing-system
+  annotations:
+    description: "Configuration for MinIO settings"
+data:
+  MINIO_BROWSER_REDIRECT_URL: "http://localhost:9001"
+  MINIO_BROWSER: "on"
+
+  MINIO_COMPRESS: "on"
+  MINIO_COMPRESS_EXTENSIONS: ".txt,.log,.csv,.json,.tar,.xml,.bin,.tif,.tiff"
+  MINIO_API_REQUESTS_MAX: "1600"
+
+  ### Optional
+  MINIO_NOTIFY_WEBHOOK_ENABLE_eoworkflow: "on"
+  MINIO_NOTIFY_WEBHOOK_ENDPOINT_eoworkflow: "http://broker-ingress.knative-eventing.svc.cluster.local/eo-workflow/eo-event-broker"
+
+  MINIO_STORAGE_CLASS_STANDARD: "EC:4"
+  MINIO_CACHE_EXPIRY_DAYS: "7"
+  MINIO_CACHE_EXCLUDE: "*.tmp"
+  ###########
+
+  create-buckets.sh: |
+    #!/bin/sh
+    set -e
+    sleep 5
+
+    # Create required buckets
+    mc alias set myminio http://localhost:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
+    mc mb --ignore-existing myminio/raw-assets
+    mc mb --ignore-existing myminio/cog-assets
+    mc mb --ignore-existing myminio/fmask-raw
+    mc mb --ignore-existing myminio/fmask-cog
+    mc mb --ignore-existing myminio/requests
+
+    # Set appropriate policies
+    mc policy set download myminio/cog-assets
+    mc policy set download myminio/fmask-cog
+
+    echo "MinIO buckets initialized successfully"

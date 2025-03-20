@@ -1,0 +1,113 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: cog-transformer-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: cog-transformer-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.asset.ingested
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: cog-transformer
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: completion-tracker-register-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: completion-tracker-register-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.scene.assets.registered
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: completion-tracker
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: completion-tracker-asset-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: completion-tracker-asset-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.asset.transformed
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: completion-tracker
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: fmask-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: fmask-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.scene.ready
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: fmask
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: fmask-cog-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: fmask-cog-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.fmask.completed
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: cog-transformer
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: error-handler-trigger
+  namespace: eo-workflow
+  labels:
+    app.kubernetes.io/name: error-handler-trigger
+    app.kubernetes.io/part-of: eo-processing-system
+spec:
+  broker: eo-event-broker
+  filter:
+    attributes:
+      type: eo.processing.error
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: error-handler
